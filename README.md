@@ -1,36 +1,57 @@
-wechat corp service
+wechat openflatform 3rd-party service
 ====================
 
-微信公共平台企业号版(第三方企业套件)SDK－主动调用接口
+微信开放平台第三方开放平台版SDK－主动调用接口
 
 
 ## 功能说明
 
-企业第三方应用套件开发商管理已经托管的套件应用，以及提供应用授权接口。
+微信开放平台第三方开放平台接口主动调用，以及提供应用授权接口。
 
 ## 安装方法
 
 ```sh
-$ npm install wechat-corp-service
+$ npm install wechat-open-service
 ```
 
 ## 使用方法
 
 - 回调接口请移步: [微信公共平台企业号版(第三方企业套件)SDK－回调接口](https://github.com/node-webot/wechat-corp-service-callback)
+- 对, 你没看错, 这是可以用的, 修改一下InfoType的判断就行
+
+```js
+var _route = function(message, req, res, next) {
+
+      if (message.InfoType == 'component_verify_ticket') { //微信服务器发过来的票，每10分钟发一次
+        ParamConfigService.set('component_verify_ticket',message.ComponentVerifyTicket);
+        sails.log.error("ticket:"+message.ComponentVerifyTicket);
+        res.reply('success');
+      }else if (message.InfoType == 'unauthorized') { //取消授权的通知
+        //更新到数据库
+        sails.log.error("取消授权的appid:"+message.AuthorizerAppid);
+        res.reply('success');
+      } else {
+        res.reply('success');
+      };
+    }
+
+    wechat_cs(_config, _route)(req, res, next);
+```
+
 
 ### 前提
 
-- 首先，你要有一个企业号。
-- 然后，你要申请成为第三方企业套件的供应商。
-- 接下来才可以创建套件，并且设置套件应用。
-- 基于本SDK开发具体的套件应用。
+- 首先，你要有一个开放平台号(open.weixin.qq.com)。
+- 然后，你要通过开发者认证以及申请第三方开放平台。
+- 接下来才可以创建第三方平台应用，并且设置第三方平台应用。
+- 基于本SDK开发具体的第三方平台应用。
 
 ### 用法
 
 其中的token，encodingAESKey，suite_id可以在套件的信息配置界面获取。
 
 ```js
-var APICorp = require('wechat-corp-service');
+var APIOpen = require('wechat-open-service');
 
 var get_token = function(cb) {
   var self = this;
