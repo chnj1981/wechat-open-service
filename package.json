@@ -1,6 +1,6 @@
 {
   "name": "wechat-open-service",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "apis set for wechat open platform 3rd-party service 微信开放平台的第三方平台接口",
   "main": "index.js",
   "scripts": {
