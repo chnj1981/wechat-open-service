@@ -1,6 +1,6 @@
 {
   "name": "wechat-open-service",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "apis set for wechat open platform 3rd-party service 微信开放平台的第三方平台接口",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/ityao/wechat-open-service",
   "dependencies": {
-    "urllib": "^2.2.1"
+    "urllib": "^2.2.1",
+    "wechat-api": "latest"
   },
   "devDependencies": {
     "mocha": "*",

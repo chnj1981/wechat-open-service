@@ -51,7 +51,7 @@ var _route = function(message, req, res, next) {
 其中的token，encodingAESKey，suite_id可以在套件的信息配置界面获取。
 
 ```js
-var APIOpen = require('wechat-open-service');
+var WechatOpenAPI = require('wechat-open-service');
 
 var get_token = function(cb) {
   var self = this;
@@ -94,21 +94,29 @@ var save_token = function(token, cb) {
   ], cb);
 }
 
-var apicorp = new APICorp(sc.suite_id, sc.suite_secert, sc.suite_ticket, get_token, save_token),
-  // 授权完成后跳转的URL，一般返回套件开发商自己的页面，并且获取用户授权的信息。
-  redirect_uri = 'http://xxx.xxx.xxx/auth_callback_url',
-  auth_url = '';
+var openApi = new WechatOpenAPI(component_appid,component_appsecret,ticket,get_token,save_token);
+// 授权完成后跳转的URL，一般返回套件开发商自己的页面，并且获取用户授权的信息。
+redirect_uri = 'http://xxx.xxx.xxx/auth_callback_url',
+auth_url = '';
 
 // 获取临时授权码，生成授权页面（带一个授权的按钮）
-apicorp.getPreAuthCode(apps, function(err, result) {
-  auth_url = apicorp.generateAuthUrl(result.pre_auth_code, encodeURIComponent(redirect_uri), 'OK');
+openApi.getPreAuthCode(appid, function(err, result) {
+  auth_url = openApi.generateAuthUrl(result.pre_auth_code, encodeURIComponent(redirect_uri));
 });
 
-// 授权后，跳转回来的URL，可以获取auth_code，然后换取永久授权码。得到永久授权码之后就能知道是那个用户的企业号了。
+// 授权后，跳转回来的URL，可以获取auth_code，然后换取authorizer_refresh_token。得到永久授权之后就能知道是哪个微信公众号appid了(authorizer_appid)。
 var auth_code = req.query.auth_code;
-apicorp.getPermanentCode(auth_code, cb);
+openApi.getAuthorizerRefreshToken(auth_code, cb);
 
 ```
+
+### 代替授权公众号调用接口用法, 基于前面的方法获得authorizer_refresh_token后, 可以这样调用
+openApi.getLatestToken(function(err, token){
+	var component_access_token = token.component_access_token;
+	var apiAgent = new WechatOpenAPI.Agent(component_appid,component_access_token,authorizer_appid,authorizer_refresh_token,get_token,save_token);
+		//举例,获取客户公众号的素材数量
+	apiAgent.getMaterialCount(function(err, result){...});	
+});
 
 ### 通过代理服务器访问
 
