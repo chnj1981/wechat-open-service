@@ -111,12 +111,17 @@ openApi.getAuthorizerRefreshToken(auth_code, cb);
 ```
 
 ### 代替授权公众号调用接口用法, 基于前面的方法获得authorizer_refresh_token后, 可以这样调用
+
+```js
+
 openApi.getLatestToken(function(err, token){
 	var component_access_token = token.component_access_token;
 	var apiAgent = new WechatOpenAPI.Agent(component_appid,component_access_token,authorizer_appid,authorizer_refresh_token,get_token,save_token);
 		//举例,获取客户公众号的素材数量
 	apiAgent.getMaterialCount(function(err, result){...});	
 });
+
+```
 
 ### 通过代理服务器访问
 
